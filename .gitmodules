@@ -1,0 +1,3 @@
+[submodule "flask_backend/ext/webui/templates/frontend"]
+	path = flask_backend/ext/webui/templates/frontend
+	url = https://github.com/2021UESTCDbExperimentGroup18/frontend.git
