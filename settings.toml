@@ -1,22 +1,23 @@
 [default]
-DEBUG = false
+DEBUG = true
 FLASK_ADMIN_TEMPLATE_MODE = "bootstrap3"
 FLASK_ADMIN_SWATCH = 'cerulean'
+MONGO_URI = "mongodb://root:dmuestc@mongodb.dmuestc.xyz:32127/FoodDelivery?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
 SQLALCHEMY_DATABASE_URI = 'sqlite:///development.db'
 TITLE = "flask_backend"
 SECRET_KEY = "Pl3453Ch4ng3"
 PASSWORD_SCHEMES = ['pbkdf2_sha512', 'md5_crypt']
 EXTENSIONS = [
     "flask_bootstrap:Bootstrap",
-    "flask_backend.ext.database:init_app",
     "flask_backend.ext.admin:init_app",
     "flask_backend.ext.webui:init_app",
     "flask_backend.ext.restapi:init_app",
+    "flask_backend.ext.restapi.user_api:init_app",
 ]
 
 [development]
 EXTENSIONS = [
-    "flask_debugtoolbar:DebugToolbarExtension",
+#    "flask_debugtoolbar:DebugToolbarExtension",
     "dynaconf_merge_unique"  # to reuse extensions list from [default]
 ]
 TEMPLATES_AUTO_RELOAD = true
@@ -37,9 +38,3 @@ DEBUG_TB_PANELS = [
     "flask_debugtoolbar.panels.profiler.ProfilerDebugPanel",
     "flask_debugtoolbar.panels.config_vars.ConfigVarsDebugPanel"
 ]
-
-[testing]
-SQLALCHEMY_DATABASE_URI = 'sqlite:///testing.db'
-
-[production]
-SQLALCHEMY_DATABASE_URI = 'sqlite:///production.db'

@@ -10,4 +10,4 @@ class User(BaseModel, BaseMethod):
     phone: constr(regex=r'^1[3456789]\d{9}$')
     nid: constr(min_length=18, max_length=18)
     create_time: datetime
-    update_time: datetime
+    modify_time: datetime

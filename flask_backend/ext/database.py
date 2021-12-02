@@ -35,8 +35,8 @@ def get_user_by_user_id(user_id):
             }
         ]
 
-        movie = db.movies.aggregate(pipeline).next()
-        return movie
+        user = db.user.aggregate(pipeline).next()
+        return user
 
     except StopIteration as _:
         return None
@@ -45,12 +45,3 @@ def get_user_by_user_id(user_id):
         return {}
 
 
-def add_user(user: User):
-    d = User.__dict__
-    new_document = {}
-    for key in d:
-        new_document[key] = user[key]
-    try:
-        return list(db.user.insert_one(new_document))
-    except Exception as e:
-        return e
