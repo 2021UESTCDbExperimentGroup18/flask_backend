@@ -1,5 +1,6 @@
 from dynaconf import FlaskDynaconf
 from flask import Flask
+from flask_cors import CORS
 
 
 def create_app(**config):
@@ -9,6 +10,7 @@ def create_app(**config):
         "EXTENSIONS"
     )  # Load extensions from settings.toml
     app.config.update(config)  # Override with passed config
+    CORS(app, supports_credentials=True)
     return app
 
 
