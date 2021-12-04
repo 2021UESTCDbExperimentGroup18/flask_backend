@@ -6,6 +6,7 @@ from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from flask_backend.ext.restapi.user_api.models import User
+import logging
 
 
 def get_db():
