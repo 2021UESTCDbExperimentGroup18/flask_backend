@@ -111,41 +111,5 @@ def init_app(app):
 
 
 
-bp2 = Blueprint("user_api", __name__, url_prefix="/api/login")
-@bp2.route('/login_info', methods=['GET'])
-def login_info():
-    phone = request.args.get('phone', "")
-    input_password = request.args.get('password', "")
-    try:
-        true_password = get_password_by_phone(phone)  # TODO:
-        if true_password == -1:
-            return -1
-        else:
-            if true_password != input_password:
-                return -2
-            else:
-                return 1  
-    except Exception:
-        return {"status": "error"}
-
-bp3 = Blueprint("user_api", __name__, url_prefix="/api/signup")
-@bp2.route('/signup_info', methods=['GET'])
-def signup_info():
-    user_type = request.args.get('user_type', "user")
-    phone = request.args.get('phone', "")
-    password = request.args.get('password', "")
-    nid = request.args.get('nid', "")
-    user_name = request.args.get('user_name', "")
-    user_dic = {}
-    user_dic['user_type'] = user_type
-    user_dic['phone'] = phone
-    user_dic['password'] = password
-    user_dic['nid'] = nid
-    user_dic['user_name'] = user_name
-    try:
-        flag = signup_user(user_dic.to_bson()) # TODO:
-        return flag
-    except Exception:
-        return {"status": "error"}
 
 
