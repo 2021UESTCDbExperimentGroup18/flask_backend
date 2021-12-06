@@ -9,11 +9,11 @@ def login_info():
     try:
         true_password = get_password_by_phone(phone)  # TODO:
         if true_password == -1:
-            return -1
+            return {"code":-1,"message":"用户不存在"}
         else:
             if true_password != input_password:
-                return -2
+                return {"code":-2,"message":  "密码错误"}
             else:
-                return 1  
+                return {"code":1,"message":  "验证通过"}
     except Exception:
         return {"status": "error"}

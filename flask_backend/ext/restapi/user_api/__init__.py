@@ -20,51 +20,60 @@ def get_user_info():
 
 @bp.route('/add_address', methods=['POST'])
 def add_address():
-    user_id = request.args.get('user_id', "")
-    phone = request.args.get('phone', "")
-    address = request.args.get('address', "")
+    user_id = request.forms.get('user_id', "")
+    phone = request.forms.get('phone', "")
+    address = request.forms.get('address', "")
     address_info = {}
     address_info['user_id'] = user_id
     address_info['phone'] = phone
     address_info['address'] = address
     try:
-        flag = add_address_to_db(address_info.to_bson())  # TODO: 函数名待定
-        return flag
+        flag = add_address_to_db(address_info)  # TODO: 函数名待定
+        if flag：
+            return {"code":True,"message":"添加成功"}
+        else:
+            return {"code":False,"message":"添加失败"}
     except Exception:
         return {"status": "error"} 
 
 @bp.route('/remove_address', methods=['POST'])
 def remove_address():
-    address_id = request.args.get('address_id', "")
+    address_id = request.forms.get('address_id', "")
     try:
         flag = remove_address_from_db(address_id)   # TODO: 
-        return flag
+        if flag：
+            return {"code":True,"message":"移除成功"}
+        else:
+            return {"code":False,"message":"移除失败"}
     except Exception:
         return {"status": "error"} 
 
 @bp.route('/check_password', methods=['POST'])
 def check_password():
-    user_id = request.args.get('user_id', "")
-    input_password = request.args.get('password', "")
+    user_id = request.forms.get('user_id', "")
+    input_password = request.forms.get('password', "")
     try:
         true_password = get_password_by_id(user_id)  # TODO:
         if true_password == -1:
-            return -1
+            return {"code":-1,"message":"用户不存在"}
         else:
             if true_password != input_password:
-                return -2
+                return {"code":-2,"message":  "密码错误"}
             else:
-                return 1  
+                return {"code":1,"message":  "验证通过"} 
     except Exception:
         return {"status": "error"}
 
 @bp.route('/change_password', methods=['POST'])
 def change_password():
-    user_id = request.args.get('user_id', "")
-    new_password = request.args.get('password', "")
+    user_id = request.forms.get('user_id', "")
+    new_password = request.forms.get('password', "")
     try:
         flag = change_password(user_id,new_password)
-        return flag
+        if flag：
+            return {"code":True,"message":"修改成功"}
+        else:
+            return {"code":False,"message":"修改失败"}
     except Exception:
         return {"status": "error"}
 
@@ -80,8 +89,8 @@ def search():   #获取用户地址列表
             del addr_dic['_id']
             addr_dic['address_id'] = addr_id
             address_object = Address(**addr_dic)
-            address_object_list.append(address_object)
-        return user_object_list.to_json()
+            address_object_list.append(address_object.to_json())
+        return user_object_list
     except Exception:
         return {"status": "error"}   
 
@@ -98,8 +107,8 @@ def get_user_list():
             del user_dic['_id']
             user_dic['user_id'] = userid
             user_object = User(**user_dic)
-            user_object_list.append(user_object)
-        return user_object_list.to_json()
+            user_object_list.append(user_object.to_json())
+        return user_object_list
     except Exception:
         return {"status": "error"}   
 

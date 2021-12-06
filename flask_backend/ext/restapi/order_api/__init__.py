@@ -12,22 +12,13 @@ def order_num():
     try:
         order_num = get_order_num(user_id,order_status)  # TODO:
         return order_num
-        # order_list = get_order_list(user_id,order_status)
-        # order_object_list = []
-        # for order in order_list:
-        #     orderid = order['_id']
-        #     del order['id']
-        #     order['order_id'] = orderid
-        #     order_object = Order(**order)
-        #     order_object_list.append(order_object)
-        # return order_object_list.to_json
     except Exception:
         return {"status": "error"}
 
 
 @bp.route('/valid_order', methods=['GET'])
 def valid_order():
-    page_id = int(request.args.get('page_id', ""))
+    page_id = int(request.args.get('page_id', 1))
     try:
         validorder_list = get_valid_order(page_id)  # TODO:
         order_object_list = []
@@ -36,15 +27,15 @@ def valid_order():
             del order['id']
             order['order_id'] = orderid
             order_object = Order(**order)
-            order_object_list.append(order_object)
-        return order_object_list.to_json()
+            order_object_list.append(order_object.to_json())
+        return order_object_list
     except Exception:
         return {"status": "error"}
 
 
 @bp.route('/order_search', methods=['GET'])
 def order_search():
-    page_id = int(request.args.get('page_id', ""))
+    page_id = int(request.args.get('page_id', 1))
     user_id = request.args.get('user_id', "")
     user_type = request.args.get('user_type', "")
     try:
@@ -55,8 +46,8 @@ def order_search():
             del order['id']
             order['order_id'] = orderid
             order_object = Order(**order)
-            order_object_list.append(order_object)
-        return order_object_list.to_json()
+            order_object_list.append(order_object.to_json())
+        return order_object_list
     except Exception:
         return {"status": "error"}
 
@@ -76,8 +67,22 @@ def order_details():
 @bp.route('/new_order', methods=['POST'])
 def new_order():
     postform = json.loads(request.get_data(as_text = True)) # TODO:
+    order = Order()
+    order.order_status = "active"
+    order.user_id = postform["user_id"]
+    commodities_list = []
+    for commodity in postform["commodities"]:
+        commodity_mes = Commodity()
+        commodity_mes.commodity_id = commodity[0]
+        commodity_mes.commodity_number = int(Commodity[1])
+        commodities_list.append(commodity_mes)
+    order.commodities = commodities_list
+    order.address_id = postform["address_id"]
     try:
-        flag = new_order(postform)
-        return flag
+        flag = new_order(order.to_bson())
+        if flag：
+            return {"code":True,"message":"添加成功"}
+        else:
+            return {"code":False,"message":"添加失败"}
     except Exception:
         return {"status": "error"}
