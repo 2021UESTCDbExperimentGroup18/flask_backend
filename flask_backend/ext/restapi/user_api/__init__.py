@@ -10,13 +10,14 @@ def get_user_info():
     try:
         result = get_user_by_user_id(user_id)  # TODO:
         userid = result['_id']
-        del result['_id']
-        result['user_id'] = userid
+        # del result['_id']
+        result['user_id'] = str(userid)
+        result['user_name'] = user_id
         user = User(**result)
         return user.to_json()
-    except Exception:
-        return {"status": "error"}    
-    
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 
 @bp.route('/add_address', methods=['POST'])
 def add_address():
@@ -29,24 +30,24 @@ def add_address():
     address_info['address'] = address
     try:
         flag = add_address_to_db(address_info)  # TODO: 函数名待定
-        if flag：
+        if flag:
             return {"code":True,"message":"添加成功"}
         else:
             return {"code":False,"message":"添加失败"}
     except Exception:
-        return {"status": "error"} 
+        return {"status": "error"}
 
 @bp.route('/remove_address', methods=['POST'])
 def remove_address():
     address_id = request.forms.get('address_id', "")
     try:
-        flag = remove_address_from_db(address_id)   # TODO: 
-        if flag：
+        flag = remove_address_from_db(address_id)   # TODO:
+        if flag:
             return {"code":True,"message":"移除成功"}
         else:
             return {"code":False,"message":"移除失败"}
     except Exception:
-        return {"status": "error"} 
+        return {"status": "error"}
 
 @bp.route('/check_password', methods=['POST'])
 def check_password():
@@ -60,7 +61,7 @@ def check_password():
             if true_password != input_password:
                 return {"code":-2,"message":  "密码错误"}
             else:
-                return {"code":1,"message":  "验证通过"} 
+                return {"code":1,"message":  "验证通过"}
     except Exception:
         return {"status": "error"}
 
@@ -70,11 +71,11 @@ def change_password():
     new_password = request.forms.get('password', "")
     try:
         flag = change_password(user_id,new_password)
-        if flag：
+        if flag:
             return {"code":True,"message":"修改成功"}
         else:
             return {"code":False,"message":"修改失败"}
-    except Exception:
+    except Exception :
         return {"status": "error"}
 
 
@@ -92,7 +93,7 @@ def search():   #获取用户地址列表
             address_object_list.append(address_object.to_json())
         return user_object_list
     except Exception:
-        return {"status": "error"}   
+        return {"status": "error"}
 
 
 @bp.route('/user_list', methods=['GET'])
@@ -110,7 +111,7 @@ def get_user_list():
             user_object_list.append(user_object.to_json())
         return user_object_list
     except Exception:
-        return {"status": "error"}   
+        return {"status": "error"}
 
 
 
