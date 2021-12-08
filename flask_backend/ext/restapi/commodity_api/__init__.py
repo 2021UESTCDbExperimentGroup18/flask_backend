@@ -1,3 +1,4 @@
+import codecs
 from crypt import methods
 
 from flask import Blueprint, request, jsonify
@@ -47,12 +48,14 @@ def get_details():
         return {"code": "error", "message": e}
 
 
-@bp.route("/getDetailsImages", methods=["GET"])
+@bp.route("/getDetailsPicture", methods=["GET", "POST"])
 def get_details_images():
     product_id = request.args.get("productID", "")
     try:
-        images = get_product_image_by_id(product_id)
-        return {"images": images}
+        image = get_pic_by_product_id(product_id)
+        base64_data = codecs.encode(image.read(), 'base64')
+        image = base64_data.decode('utf-8')
+        return {"image": [image]}
     except Exception as e:
         return {"code": "error", "message": e}
 

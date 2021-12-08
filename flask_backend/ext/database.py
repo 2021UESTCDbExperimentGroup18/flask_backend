@@ -127,7 +127,7 @@ def get_product_by_id(product_id):
         pipeline = [
             {
                 "$match": {
-                    "_id": product_id
+                    "_id": ObjectId(product_id)
                 }
             },
         ]
@@ -160,10 +160,12 @@ def get_user_by_page(user_type, page_id):
         return []
 
 
-def get_product_image_by_id(product_id):
+def get_pic_by_product_id(product_id):
+    picture_id = db.good.find_one({
+        "_id": ObjectId(product_id)
+    }, {"_id": 0, "picture_id": 1})["picture_id"]
     grid_fs = gridfs.GridFS(db)
-    grid_fs.get(product_id)
-    return None
+    return grid_fs.get(ObjectId(picture_id))
 
 
 def upload_image(image, name):
