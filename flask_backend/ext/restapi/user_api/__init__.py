@@ -113,8 +113,6 @@ def get_user_list():
         return {"status": "error", "message": e}
 
 
-
-
 def init_app(app):
     app.register_blueprint(bp)
 

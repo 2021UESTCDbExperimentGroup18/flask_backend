@@ -1,6 +1,6 @@
 from crypt import methods
 
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_backend.ext.database import *
 from flask_backend.ext.restapi.commodity_api.models import *
 
@@ -45,6 +45,38 @@ def get_details():
         return {"Product": product_json}
     except Exception as e:
         return {"code": "error", "message": e}
+
+
+@bp.route("/getDetailsImages", methods=["GET"])
+def get_details_images():
+    product_id = request.args.get("productID", "")
+    try:
+        images = get_product_image_by_id(product_id)
+        return {"images": images}
+    except Exception as e:
+        return {"code": "error", "message": e}
+
+
+@bp.route('/upload_product', methods=["POST"])
+def save_image():
+    if 'image' in request.files:
+        image = request.files['image']
+        product_name = request.form.get('product_name')
+
+        id = upload_image(image, product_name)
+
+        query = {
+            'picture_id': id,
+            'product_name': product_name,
+            "product_intro": request.form.get('product_intro'),
+            "product_price": request.form.get('product_price'),
+            "product_selling_price": request.form.get('product_selling_price')
+        }
+        status = db.good.insert_one(query)
+        if status:
+            return jsonify({'result': 'Image uploaded successfully'}), 201
+        return jsonify({'result': 'Error occurred during uploading'}), 500
+    return jsonify({'result': 'no image uploaded'}), 500
 
 
 def init_app(app):

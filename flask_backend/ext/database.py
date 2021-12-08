@@ -2,6 +2,7 @@ import bson
 from flask import current_app, g
 from werkzeug.local import LocalProxy
 from flask_pymongo import PyMongo
+import gridfs
 from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
@@ -157,6 +158,17 @@ def get_user_by_page(user_type, page_id):
     except Exception as e:
         print(e)  # TODO: 重构日志系统，将此处修改为对应日志记录
         return []
+
+
+def get_product_image_by_id(product_id):
+    grid_fs = gridfs.GridFS(db)
+    grid_fs.get(product_id)
+    return None
+
+
+def upload_image(image, name):
+    grid_fs = gridfs.GridFS(db)
+    return grid_fs.put(image, content_type=image.content_type, filename=name)
 
 
 def get_product_name_total(name):
