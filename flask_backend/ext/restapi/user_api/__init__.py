@@ -113,6 +113,65 @@ def get_user_list():
         return {"status": "error", "message": e}
 
 
+@bp.route('/shoppingCart/getShoppingCart', methods=['POST'])
+def get_shopping_cart():
+    data = request.get_json()
+    user_id = data['user_id']
+    shopping_data = get_shopping_cart_by_user_id(user_id)
+    if shopping_data is None:
+        return {"code": -1, "shoppingCartData": []}
+    else:
+        return {"code": 1, "shoppingCartData": shopping_data}
+
+
+@bp.route('/shoppingCart/addShoppingCart', methods=['POST'])
+def add_shopping_cart():
+    data = request.get_json()
+    user_id = data['user_id']
+    product_id = data['product_id']
+
+    item = get_cart_item_by_user_product(user_id, product_id)
+    code = 1
+    if item is not None:
+        code = 2
+
+    flag = add_to_shopping_cart(user_id, product_id)
+    shopping_cart_data = get_shopping_cart_by_user_id(user_id)
+
+    if flag and shopping_cart_data is not None:
+        return {"code": code, "message": "添加购物车成功", "shoppingCartData": shopping_cart_data}
+    else:
+        return {"code": -1, "message": "添加购物车失败", "shoppingCartData": shopping_cart_data}
+
+@bp.route('/shoppingCart/updateShoppingCart', methods=['POST'])
+def update_user_shopping_cart():
+    data = request.get_json()
+    user_id = data['user_id']
+    product_id = data['product_id']
+    num = data['num']
+
+    id = update_shopping_cart(user_id, product_id, num)
+
+    if id:
+        return {"code": 1, "message": "修改购物车成功"}
+    else:
+        return {"code": -1, "message": "修改购物车失败"}
+
+
+@bp.route('/shoppingCart/deleteShoppingCart', methods=['POST'])
+def delete_user_shopping_item():
+    data = request.get_json()
+    user_id = data['user_id']
+    product_id = data['product_id']
+
+    id = delete_shopping_cart(user_id, product_id)
+
+    if id:
+        return {"code": 1, "message": "修改购物车成功"}
+    else:
+        return {"code": -1, "message": "修改购物车失败"}
+
+
 def init_app(app):
     app.register_blueprint(bp)
 

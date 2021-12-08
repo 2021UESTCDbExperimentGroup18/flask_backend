@@ -17,6 +17,8 @@ def get_all_product():
         product_json = [Product(**x).to_json() for x in products]
         for i in range(len(products)):
             product_json[i]["product_id"] = str(products[i]["_id"])
+            image = get_pic_by_product_id(product_json[i]["product_id"])
+            product_json[i]["image"] = image
         total_product = get_product_total()
         return {"Product": product_json, "total": total_product}
     except Exception as e:
@@ -31,8 +33,13 @@ def get_product_by_search():
     try:
         products = get_product_by_name(product_name, page_size, page)
         product_json = [Product(**x).to_json() for x in products]
+        for i in range(len(product_json)):
+            product_json[i]["product_id"] = str(products[i]["_id"])
+            image = get_pic_by_product_id(product_json[i]["product_id"])
+            product_json[i]["image"] = image
         total_product = get_product_name_total(product_name)
         return {"Product": product_json, "total": total_product}
+
     except Exception as e:
         return {"code": "error", "message": e}
 
@@ -53,8 +60,6 @@ def get_details_images():
     product_id = request.args.get("productID", "")
     try:
         image = get_pic_by_product_id(product_id)
-        base64_data = codecs.encode(image.read(), 'base64')
-        image = base64_data.decode('utf-8')
         return {"image": [image]}
     except Exception as e:
         return {"code": "error", "message": e}

@@ -19,3 +19,13 @@ class Address(BaseModel, BaseMethod):
     user_id: str
     address: str
     phone: constr(regex=r'^1[3456789]\d{9}$')
+
+
+class ShoppingCartItem(BaseModel, BaseMethod):
+    user_id: str
+    check: bool
+    num: int
+    price: float
+    productID: str
+    productImg: str
+    productName: str
