@@ -13,6 +13,7 @@ EXTENSIONS = [
     "flask_backend.ext.webui:init_app",
     "flask_backend.ext.restapi:init_app",
     "flask_backend.ext.restapi.user_api:init_app",
+    "flask_backend.ext.restapi.commodity_api:init_app",
 ]
 
 [development]

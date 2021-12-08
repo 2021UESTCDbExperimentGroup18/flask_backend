@@ -46,3 +46,132 @@ def get_user_by_user_id(user_id):
         return {}
 
 
+def get_password_by_phone(phone):
+    try:
+
+        pipeline = [
+            {
+                "$match": {
+                    "phone": phone
+                }
+            }
+        ]
+
+        user = db.user.aggregate(pipeline).next()
+        return user.password
+
+    except StopIteration as _:
+        return None
+    except Exception as e:
+        print(e)  # TODO: 重构日志系统，将此处修改为对应日志记录
+        return {}
+
+
+def get_product_by_page(page_size, page):
+    try:
+
+        pipeline = [
+            {
+                "$match": {}
+            },
+            {
+                "$limit": page_size
+            },
+            {
+                "$skip": page_size * (page - 1)
+            }
+        ]
+
+        products = [product for product in db.good.aggregate(pipeline)]
+        return products
+
+    except StopIteration as _:
+        return None
+    except Exception as e:
+        print(e)  # TODO: 重构日志系统，将此处修改为对应日志记录
+        return []
+
+
+def get_product_by_name(name, page_size, page):
+    try:
+
+        pipeline = [
+            {
+                "$match": {
+                    "product_name": {
+                        "$regex": name
+                    }
+                }
+            },
+            {
+                "$limit": page_size
+            },
+            {
+                "$skip": page_size * (page - 1)
+            }
+        ]
+
+        products = [product for product in db.good.aggregate(pipeline)]
+        return products
+
+    except StopIteration as _:
+        return None
+    except Exception as e:
+        print(e)  # TODO: 重构日志系统，将此处修改为对应日志记录
+        return []
+
+
+def get_product_by_id(product_id):
+    try:
+        pipeline = [
+            {
+                "$match": {
+                    "_id": product_id
+                }
+            },
+        ]
+        products = [product for product in db.good.aggregate(pipeline)]
+        return products
+    except Exception as e:
+        print(e)  # TODO: 重构日志系统，将此处修改为对应日志记录
+        return []
+
+
+def get_user_by_page(user_type, page_id):
+    try:
+        pipeline = [
+            {
+                "$match": {
+                    "user_type": user_type
+                }
+            },
+           {
+               "$limit": 10
+           },
+           {
+               "$skip": 10 * (page_id - 1)
+           }
+        ]
+        users = [user for user in db.user.aggregate(pipeline)]
+        return users
+    except Exception as e:
+        print(e)  # TODO: 重构日志系统，将此处修改为对应日志记录
+        return []
+
+
+def get_product_name_total(name):
+    try:
+        return db.good.count_documents({"product_name": {
+            "$regex": name
+        }})
+    except Exception as e:
+        print(e)  # TODO: 重构日志系统，将此处修改为对应日志记录
+        return 0
+
+
+def get_product_total():
+    try:
+        return db.good.count_documents({})
+    except Exception as e:
+        print(e)  # TODO: 重构日志系统，将此处修改为对应日志记录
+        return 0

@@ -134,3 +134,4 @@ development.db
 
 .history/
 .idea/
+.DS_Store

@@ -101,17 +101,16 @@ def get_user_list():
     user_type = request.args.get('user_type', "user")
     page_id = int(request.args.get('page_id', 1))
     try:
-        user_info_list = get_user_list(user_type, page_id)   # TODO:函数名待更改
+        user_info_list = get_user_by_page(user_type, page_id)   # TODO:函数名待更改
         user_object_list = []
         for user_dic in user_info_list:
             userid = user_dic['_id']
-            del user_dic['_id']
-            user_dic['user_id'] = userid
+            user_dic['user_id'] = str(userid)
             user_object = User(**user_dic)
             user_object_list.append(user_object.to_json())
-        return user_object_list
-    except Exception:
-        return {"status": "error"}
+        return {"users": user_object_list}
+    except Exception as e:
+        return {"status": "error", "message": e}
 
 
 
