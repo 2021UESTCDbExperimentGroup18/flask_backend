@@ -1,6 +1,8 @@
-from flask_backend.utils.base_model import BaseMethod
-from pydantic import BaseModel, constr
 from datetime import datetime
+
+from pydantic import BaseModel, constr
+
+from flask_backend.utils.base_model import BaseMethod
 
 
 class Commodity(BaseModel, BaseMethod):

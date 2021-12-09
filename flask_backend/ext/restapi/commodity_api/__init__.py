@@ -1,7 +1,5 @@
-import codecs
-from crypt import methods
-
 from flask import Blueprint, request, jsonify
+
 from flask_backend.ext.database import *
 from flask_backend.ext.restapi.commodity_api.models import *
 

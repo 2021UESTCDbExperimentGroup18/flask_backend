@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+
 from flask_backend.ext.database import *
 
 bp = Blueprint("login_api", __name__, url_prefix="/api/login")
@@ -19,9 +20,9 @@ def login_info():
             else:
                 user_id = get_user_id_by_phone(phone)
                 return {"code": 1, "message": "验证通过", "user": {
-                "phone": phone,
-                "user_id": user_id
-            }}
+                    "phone": phone,
+                    "user_id": user_id
+                }}
     except Exception as e:
         return {"code": -3, "message": e}
 

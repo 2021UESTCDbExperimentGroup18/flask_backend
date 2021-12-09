@@ -1,16 +1,14 @@
-from sys import flags
-import bson
 import codecs
-from flask import current_app, g
-from werkzeug.local import LocalProxy
-from flask_pymongo import PyMongo
-import gridfs
-from pymongo.errors import DuplicateKeyError, OperationFailure
-from bson.objectid import ObjectId
-from bson.errors import InvalidId
-from flask_backend.ext.restapi.user_api.models import User, ShoppingCartItem
-import logging
 import datetime
+import logging
+
+import gridfs
+from bson.objectid import ObjectId
+from flask import current_app, g
+from flask_pymongo import PyMongo
+from werkzeug.local import LocalProxy
+
+from flask_backend.ext.restapi.user_api.models import ShoppingCartItem
 
 
 def get_db():
@@ -217,6 +215,7 @@ def update_shopping_cart(user_id, product_id, num):
     id = db.shopping_cart.update_one({"user_id": user_id, "productID": product_id}, {"$set": {"num": num}})
     return id
 
+
 def delete_shopping_cart(user_id, product_id):
     id = db.shopping_cart.delete_one({"user_id": user_id, "productID": product_id})
     return id
@@ -244,6 +243,7 @@ def get_order_by_user(user_id):
         logging.error(e)
         return None
     return []
+
 
 def signup_user(user_dict):
     user_dict["create_time"] = datetime.datetime.now()

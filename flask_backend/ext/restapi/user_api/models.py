@@ -1,6 +1,8 @@
-from flask_backend.utils.base_model import BaseMethod
-from pydantic import BaseModel, constr
 from datetime import datetime
+
+from pydantic import BaseModel, constr
+
+from flask_backend.utils.base_model import BaseMethod
 
 
 class User(BaseModel, BaseMethod):
@@ -15,7 +17,7 @@ class User(BaseModel, BaseMethod):
 
 
 class Address(BaseModel, BaseMethod):
-    address_id:str
+    address_id: str
     user_id: str
     address: str
     phone: constr(regex=r'^1[3456789]\d{9}$')

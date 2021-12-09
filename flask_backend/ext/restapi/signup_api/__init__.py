@@ -1,6 +1,6 @@
 from flask import Blueprint, request
+
 from flask_backend.ext.database import *
-from flask_backend.ext.restapi.user_api.models import User
 
 bp = Blueprint("signup_api", __name__, url_prefix="/api/signup")
 
@@ -22,11 +22,11 @@ def signup_info():
     try:
         flag = signup_user(user_dic)
         if flag:
-            return {"code":True,"message":"注册成功"}
+            return {"code": 1, "message": "注册成功"}
         else:
-            return {"code":False,"message":"注册失败"}
+            return {"code": -1, "message": "注册失败"}
     except Exception:
-        return {"status": "error"}
+        return {"code": -1, "message": "注册异常"}
 
 
 def init_app(app):

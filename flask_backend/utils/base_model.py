@@ -1,6 +1,8 @@
+from typing import Optional
+
 from fastapi.encoders import jsonable_encoder
 from pydantic import Field
-from typing import Optional
+
 from flask_backend.utils.objectid import PydanticObjectId
 
 

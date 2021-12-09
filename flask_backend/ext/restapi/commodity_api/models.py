@@ -1,5 +1,6 @@
-from flask_backend.utils.base_model import BaseMethod
 from pydantic import BaseModel
+
+from flask_backend.utils.base_model import BaseMethod
 
 
 class Product(BaseModel, BaseMethod):

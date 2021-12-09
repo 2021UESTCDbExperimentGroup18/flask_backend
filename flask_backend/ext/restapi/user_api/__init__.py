@@ -1,5 +1,5 @@
-from crypt import methods
 from flask import Blueprint, request
+
 from flask_backend.ext.database import *
 
 bp = Blueprint("user_api", __name__, url_prefix="/api/users")
@@ -32,23 +32,25 @@ def add_address():
     try:
         flag = add_address_to_db(address_info)  # TODO: 函数名待定
         if flag:
-            return {"code":True,"message":"添加成功"}
+            return {"code": True, "message": "添加成功"}
         else:
-            return {"code":False,"message":"添加失败"}
+            return {"code": False, "message": "添加失败"}
     except Exception:
         return {"status": "error"}
+
 
 @bp.route('/remove_address', methods=['POST'])
 def remove_address():
     address_id = request.forms.get('address_id', "")
     try:
-        flag = remove_address_from_db(address_id)   # TODO:
+        flag = remove_address_from_db(address_id)  # TODO:
         if flag:
-            return {"code":True,"message":"移除成功"}
+            return {"code": True, "message": "移除成功"}
         else:
-            return {"code":False,"message":"移除失败"}
+            return {"code": False, "message": "移除失败"}
     except Exception:
         return {"status": "error"}
+
 
 @bp.route('/check_password', methods=['POST'])
 def check_password():
@@ -57,31 +59,32 @@ def check_password():
     try:
         true_password = get_password_by_id(user_id)  # TODO:
         if true_password == -1:
-            return {"code":-1,"message":"用户不存在"}
+            return {"code": -1, "message": "用户不存在"}
         else:
             if true_password != input_password:
-                return {"code":-2,"message":  "密码错误"}
+                return {"code": -2, "message": "密码错误"}
             else:
-                return {"code":1,"message":  "验证通过"}
+                return {"code": 1, "message": "验证通过"}
     except Exception:
         return {"status": "error"}
+
 
 @bp.route('/change_password', methods=['POST'])
 def change_password():
     user_id = request.forms.get('user_id', "")
     new_password = request.forms.get('password', "")
     try:
-        flag = change_password(user_id,new_password)
+        flag = change_password(user_id, new_password)
         if flag:
-            return {"code":True,"message":"修改成功"}
+            return {"code": True, "message": "修改成功"}
         else:
-            return {"code":False,"message":"修改失败"}
-    except Exception :
+            return {"code": False, "message": "修改失败"}
+    except Exception:
         return {"status": "error"}
 
 
 @bp.route('/search', methods=['GET'])
-def search():   #获取用户地址列表
+def search():  # 获取用户地址列表
     user_id = request.args.get('user_id', "")
     try:
         address_list = get_address_list(user_id)  # TODO:
@@ -102,7 +105,7 @@ def get_user_list():
     user_type = request.args.get('user_type', "user")
     page_id = int(request.args.get('page_id', 1))
     try:
-        user_info_list = get_user_by_page(user_type, page_id)   # TODO:函数名待更改
+        user_info_list = get_user_by_page(user_type, page_id)  # TODO:函数名待更改
         user_object_list = []
         for user_dic in user_info_list:
             userid = user_dic['_id']
@@ -144,6 +147,7 @@ def add_shopping_cart():
     else:
         return {"code": -1, "message": "添加购物车失败", "shoppingCartData": shopping_cart_data}
 
+
 @bp.route('/shoppingCart/updateShoppingCart', methods=['POST'])
 def update_user_shopping_cart():
     data = request.get_json()
@@ -175,8 +179,3 @@ def delete_user_shopping_item():
 
 def init_app(app):
     app.register_blueprint(bp)
-
-
-
-
-

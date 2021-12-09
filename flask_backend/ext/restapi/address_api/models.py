@@ -1,4 +1,5 @@
 from pydantic import BaseModel, constr
+
 from flask_backend.utils.base_model import BaseMethod
 
 
