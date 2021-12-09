@@ -45,7 +45,7 @@ def get_user_by_user_id(user_id):
 def get_product_by_page(page_size, page):
     try:
 
-        pipeline = [{"$match": {}}, {"$limit": page_size}, {"$skip": page_size * (page - 1)}]
+        pipeline = [{"$match": {}}, {"$sort": {"_id": 1}}, {"$limit": page_size}, {"$skip": page_size * (page - 1)}]
 
         products = [product for product in db.good.aggregate(pipeline)]
         return products
@@ -152,6 +152,7 @@ def get_shopping_cart_by_user_id(user_id):
     try:
         pipeline = [
             {"$match": {"user_id": user_id}},
+            {"$sort": {"create_time": -1}}
         ]
 
         shopping_cart = [item for item in db.shopping_cart.aggregate(pipeline)]
@@ -198,6 +199,7 @@ def add_to_shopping_cart(user_id, product_id):
         "productID": product_id,
         "productImg": get_pic_by_product_id(product_id),
         "productName": product["product_name"],
+        "create_time": datetime.datetime.now()
     }
     try:
         id = db.shopping_cart.insert_one(document)
@@ -216,33 +218,64 @@ def update_shopping_cart(user_id, product_id, num):
     return id
 
 
-def delete_shopping_cart(user_id, product_id):
+def delete_shopping_cart_by_user_product(user_id, product_id):
     id = db.shopping_cart.delete_one({"user_id": user_id, "productID": product_id})
     return id
+
+
+def delete_shopping_cart_by_user(user_id):
+    id = db.shopping_cart.delete_many({"user_id": user_id})
+    return id
+
+
+def add_order(user_id, product, order_id=""):
+    document = product
+    document["user_id"] = user_id
+    document["order_status"] = "unassigned"
+    document["order_time"] = datetime.datetime.timestamp(datetime.datetime.now())*1000
+    if order_id != "":
+        document["order_id"] = order_id
+    try:
+        id = db.order.insert_one(document).inserted_id
+        if id is None:
+            return False
+        if order_id == "":
+            res = db.order.update_one({"_id": id}, {"$set": {"order_id": str(id)}})
+            return str(id)
+        else:
+            return order_id
+    except Exception as e:
+        logging.error(e)
+        return False
 
 
 def get_order_by_user(user_id):
     try:
         pipeline = [
             {"$match": {"user_id": user_id}},
+            {"$sort": {"create_time": 1}}
         ]
 
-        shopping_cart = [item for item in db.order.aggregate(pipeline)]
-        result = []
-        for i in range(len(shopping_cart)):
-            item = ShoppingCartItem(**shopping_cart[i]).to_json()
-            item["id"] = str(shopping_cart[i]["_id"])
-            item["max_num"] = 9999
-            result.append(item)
+        orders = [item for item in db.order.aggregate(pipeline)]
+        id_set = set()
+        for order in orders:
+            id_set.add(order["order_id"])
 
-        return result
+        grouped_order = {}
+        for id in id_set:
+            grouped_order[id] = []
+
+        for i in range(len(orders)):
+            del orders[i]["_id"]
+            grouped_order[orders[i]["order_id"]].append(orders[i])
+
+        return [orders for orders in grouped_order.values()]
 
     except StopIteration as _:
         return None
     except Exception as e:
         logging.error(e)
         return None
-    return []
 
 
 def signup_user(user_dict):

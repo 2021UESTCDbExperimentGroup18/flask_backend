@@ -169,7 +169,7 @@ def delete_user_shopping_item():
     user_id = data['user_id']
     product_id = data['product_id']
 
-    id = delete_shopping_cart(user_id, product_id)
+    id = delete_shopping_cart_by_user_product(user_id, product_id)
 
     if id:
         return {"code": 1, "message": "修改购物车成功"}
