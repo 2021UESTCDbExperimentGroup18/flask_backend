@@ -80,9 +80,26 @@ def new_order():
     order.address_id = postform["address_id"]
     try:
         flag = new_order(order.to_bson())
-        if flag：
+        if flag:
             return {"code":True,"message":"添加成功"}
         else:
             return {"code":False,"message":"添加失败"}
     except Exception:
         return {"status": "error"}
+
+
+@bp.route('/order/getOrder', methods=["POST"])
+def get_user_order():
+    data = request.get_json()
+    user_id = data["user_id"]
+
+    user_order = get_order_by_user(user_id)
+
+    if user_order:
+        return {"code": 1, "orders": user_order}
+    else:
+        return {"code": -1, "orders": []}
+
+
+def init_app(app):
+    app.register_blueprint(bp)

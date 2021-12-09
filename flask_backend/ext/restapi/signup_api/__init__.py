@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from flask_backend.ext.database import *
+from flask_backend.ext.restapi.user_api.models import User
 
 bp = Blueprint("signup_api", __name__, url_prefix="/api/signup")
 
@@ -19,7 +20,7 @@ def signup_info():
     user_dic['nid'] = nid
     user_dic['user_name'] = user_name
     try:
-        flag = signup_user(user_dic) # TODO:
+        flag = signup_user(user_dic)
         if flag:
             return {"code":True,"message":"注册成功"}
         else:

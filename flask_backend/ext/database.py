@@ -10,6 +10,7 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from flask_backend.ext.restapi.user_api.models import User, ShoppingCartItem
 import logging
+import datetime
 
 
 def get_db():
@@ -221,5 +222,35 @@ def delete_shopping_cart(user_id, product_id):
     return id
 
 
-def signup_user():
-    pass
+def get_order_by_user(user_id):
+    try:
+        pipeline = [
+            {"$match": {"user_id": user_id}},
+        ]
+
+        shopping_cart = [item for item in db.order.aggregate(pipeline)]
+        result = []
+        for i in range(len(shopping_cart)):
+            item = ShoppingCartItem(**shopping_cart[i]).to_json()
+            item["id"] = str(shopping_cart[i]["_id"])
+            item["max_num"] = 9999
+            result.append(item)
+
+        return result
+
+    except StopIteration as _:
+        return None
+    except Exception as e:
+        logging.error(e)
+        return None
+    return []
+
+def signup_user(user_dict):
+    user_dict["create_time"] = datetime.datetime.now()
+    user_dict["modify_time"] = datetime.datetime.now()
+    try:
+        id = db.user.insert_one(user_dict)
+        return id
+    except Exception as e:
+        logging.error(e)
+        return False

@@ -16,6 +16,7 @@ EXTENSIONS = [
     "flask_backend.ext.restapi.commodity_api:init_app",
     "flask_backend.ext.restapi.login_api:init_app",
     "flask_backend.ext.restapi.signup_api:init_app",
+    "flask_backend.ext.restapi.order_api:init_app",
 ]
 
 [development]
