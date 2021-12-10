@@ -45,7 +45,7 @@ def get_user_by_user_id(user_id):
 def get_product_by_page(page_size, page):
     try:
 
-        pipeline = [{"$match": {}}, {"$sort": {"_id": 1}}, {"$limit": page_size}, {"$skip": page_size * (page - 1)}]
+        pipeline = [{"$match": {}}, {"$sort": {"_id": 1}}, {"$skip": page_size * (page - 1)}, {"$limit": page_size}]
 
         products = [product for product in db.good.aggregate(pipeline)]
         return products
@@ -61,7 +61,7 @@ def get_product_by_name(name, page_size, page):
     try:
 
         pipeline = [
-            {"$match": {"product_name": {"$regex": name}}},
+            {"$match": {"product_name": {"$regex": name+".*"}}},
             {"$limit": page_size},
             {"$skip": page_size * (page - 1)},
         ]
@@ -287,3 +287,23 @@ def signup_user(user_dict):
     except Exception as e:
         logging.error(e)
         return False
+
+
+def get_address_by_user_id(user_id):
+    try:
+        pipeline = [
+            {"$match": {"user_id": user_id}},
+        ]
+
+        address = [item for item in db.address.aggregate(pipeline)]
+        return address
+
+    except StopIteration as _:
+        return None
+    except Exception as e:
+        logging.error(e)
+        return None
+
+
+def remove_address_by_address_id():
+    return None

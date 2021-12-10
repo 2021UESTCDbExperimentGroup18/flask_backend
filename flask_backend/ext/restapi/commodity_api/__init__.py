@@ -9,7 +9,7 @@ bp = Blueprint("product_api", __name__, url_prefix="/api/product")
 @bp.route("/getAllProduct", methods=["GET"])
 def get_all_product():
     page = int(request.args.get("currentPage", "1"))
-    page_size = int(request.args.get("pageSize", "16"))
+    page_size = int(request.args.get("pageSize", "15"))
     try:
         products = get_product_by_page(page_size, page)
         product_json = [Product(**x).to_json() for x in products]
